@@ -44,7 +44,7 @@ jobs:
         script: |
           cd /Escritorio/ArquitecturaProyecto/apigetway
           sudo ls
-          sudo docker-compose pull app
+          sudo docker-compose pull apigetway
           sudo docker stop apigetway
           sudo docker rm apigetway
           sudo docker-compose up -d
