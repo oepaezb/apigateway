@@ -1,24 +1,29 @@
-# Etapa 1: Build
+#####
+
+# Etapa 1: Construcción
 FROM  maven:3.9.9-eclipse-temurin-21 AS build
 
-# Establece el directorio de trabajo en la imagen de construcción
+# Establece el directorio de trabajo
 WORKDIR /app
 
-# Copia el archivo pom.xml y resuelve las dependencias
+# Copia los archivos del proyecto Maven al contenedor
 COPY pom.xml ./
-RUN mvn dependency:go-offline
-
-# Copia el código fuente y compila la aplicación
 COPY src ./src
+
+# Compila la aplicación y genera el JAR
 RUN mvn clean package -DskipTests
 
-FROM  tomcat:jre21-temurin-noble
+# Etapa 2: Ejecución
+FROM openjdk:21-jdk-slim
 
-# Elimina el contenido predeterminado en la carpeta webapps de Tomcat
-RUN rm -rf /usr/local/tomcat/webapps/*
+# Establece el directorio de trabajo en el contenedor
+WORKDIR /app
 
-# Copia el archivo WAR generado al directorio de despliegue de Tomcat
-COPY --from=build /app/target/*.war /usr/local/tomcat/webapps/app.war
+# Copia el archivo JAR construido en la etapa 1
+COPY --from=build /app/target/*.war app.war
 
-# Expone el puerto predeterminado de Tomcat (8080)
+# Expone el puerto de la aplicación
 EXPOSE 8080
+
+# Configura el comando de inicio
+ENTRYPOINT ["java", "-jar", "app.war"]
