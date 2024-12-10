@@ -27,3 +27,5 @@ EXPOSE 8080
 
 # Configura el comando de inicio
 ENTRYPOINT ["java", "-jar", "app.war"]
+
+#forzar actualizar
