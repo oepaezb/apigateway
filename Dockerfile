@@ -1,7 +1,7 @@
 #####
 
 # Etapa 1: Construcción
-FROM  maven:3.9.9-eclipse-temurin-21 AS build
+FROM  maven:3.9.9-eclipse-temurin-17 AS build
 
 # Establece el directorio de trabajo
 WORKDIR /app
@@ -20,10 +20,10 @@ FROM openjdk:17.0.1-jdk-slim
 WORKDIR /app
 
 # Copia el archivo JAR construido en la etapa 1
-COPY --from=build /app/target/*.war app.war
+COPY --from=build /app/target/*.jar app.jar
 
 # Expone el puerto de la aplicación
 EXPOSE 8080
 
 # Configura el comando de inicio
-ENTRYPOINT ["java", "-jar", "app.war"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
